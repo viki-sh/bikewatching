@@ -11,16 +11,27 @@ const map = new mapboxgl.Map({
   center: [-71.09415, 42.36027],
   zoom: 12,
   minZoom: 5,
-  maxZoom: 18
+  maxZoom: 18,
 });
 
+// Global variables to hold stations + circle selection
+let stations = [];
+let circles;
+
+// Helper: Convert [lat, lon] → [x, y] on screen
+function getCoords(station) {
+  const point = new mapboxgl.LngLat(+station.Long, +station.Lat);
+  const { x, y } = map.project(point);
+  return { cx: x, cy: y };
+}
+
+// Load and render once map is ready
 map.on('load', async () => {
-  // Step 2.1: Boston
+  // Add bike lanes: Boston
   map.addSource('boston_route', {
     type: 'geojson',
     data: 'https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::existing-bike-network-2022.geojson',
   });
-
   map.addLayer({
     id: 'bike-lanes',
     type: 'line',
@@ -32,12 +43,11 @@ map.on('load', async () => {
     },
   });
 
-  // Step 2.3: Cambridge
+  // Add bike lanes: Cambridge
   map.addSource('cambridge_route', {
     type: 'geojson',
     data: 'https://raw.githubusercontent.com/cambridgegis/cambridgegis_data/main/Recreation/Bike_Facilities/RECREATION_BikeFacilities.geojson',
   });
-
   map.addLayer({
     id: 'cambridge-bike-lanes',
     type: 'line',
@@ -49,16 +59,43 @@ map.on('load', async () => {
     },
   });
 
-  // Step 3.1: Load Bluebike station JSON
-  let jsonData;
-  try {
-    const jsonurl = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
-    jsonData = await d3.json(jsonurl);
+  // Select <svg> inside #map
+  const svg = d3.select('#map').select('svg');
 
-    console.log('Loaded JSON Data:', jsonData);
-    let stations = jsonData.data.stations;
-    console.log('Stations Array:', stations);
-  } catch (error) {
-    console.error('Error loading JSON:', error);
+  // Load bike station JSON
+  const url = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
+  try {
+    const jsonData = await d3.json(url);
+    stations = jsonData.data.stations;
+
+    // Draw initial circle elements
+    circles = svg.selectAll('circle')
+      .data(stations)
+      .enter()
+      .append('circle')
+      .attr('r', 5)
+      .attr('fill', 'steelblue')
+      .attr('stroke', 'white')
+      .attr('stroke-width', 1)
+      .attr('opacity', 0.8);
+
+    // Initial placement
+    updatePositions();
+
+    // Keep circles synced on map move
+    map.on('move', updatePositions);
+    map.on('zoom', updatePositions);
+    map.on('resize', updatePositions);
+    map.on('moveend', updatePositions);
+
+  } catch (err) {
+    console.error('Failed to load station JSON', err);
   }
 });
+
+// Position update function
+function updatePositions() {
+  circles
+    .attr('cx', (d) => getCoords(d).cx)
+    .attr('cy', (d) => getCoords(d).cy);
+}
