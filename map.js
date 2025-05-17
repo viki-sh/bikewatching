@@ -21,13 +21,17 @@ function getCoords(station) {
   return { cx: x, cy: y };
 }
 
+function updatePositions() {
+  circles
+    .attr('cx', (d) => getCoords(d).cx)
+    .attr('cy', (d) => getCoords(d).cy);
+}
+
 map.on('load', async () => {
-  // Boston lanes
   map.addSource('boston_route', {
     type: 'geojson',
     data: 'https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::existing-bike-network-2022.geojson',
   });
-
   map.addLayer({
     id: 'bike-lanes',
     type: 'line',
@@ -39,12 +43,10 @@ map.on('load', async () => {
     },
   });
 
-  // Cambridge lanes
   map.addSource('cambridge_route', {
     type: 'geojson',
     data: 'https://raw.githubusercontent.com/cambridgegis/cambridgegis_data/main/Recreation/Bike_Facilities/RECREATION_BikeFacilities.geojson',
   });
-
   map.addLayer({
     id: 'cambridge-bike-lanes',
     type: 'line',
@@ -56,14 +58,17 @@ map.on('load', async () => {
     },
   });
 
-  // Select SVG inside map
-  const svg = d3.select('#map').select('svg');
+  let svg = d3.select('#map').select('svg');
+  if (svg.empty()) {
+    svg = d3.select('#map').append('svg');
+  }
+
+  const jsonURL = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
 
   try {
-    const jsonData = await d3.json('https://dsc106.com/labs/lab07/data/bluebikes-stations.json');
+    const jsonData = await d3.json(jsonURL);
     stations = jsonData.data.stations;
 
-    // Add circles
     circles = svg.selectAll('circle')
       .data(stations)
       .enter()
@@ -81,12 +86,6 @@ map.on('load', async () => {
     map.on('resize', updatePositions);
     map.on('moveend', updatePositions);
   } catch (err) {
-    console.error('Failed to load station data:', err);
+    console.error('Error loading station data:', err);
   }
 });
-
-function updatePositions() {
-  circles
-    .attr('cx', (d) => getCoords(d).cx)
-    .attr('cy', (d) => getCoords(d).cy);
-}
