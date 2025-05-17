@@ -10,12 +10,10 @@ html, body {
 }
 
 #map {
-  width: 720px;
-  height: 400px;
-  margin-top: 1rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  position: relative; /* required for SVG overlay */
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 #map svg {
