@@ -1,17 +1,24 @@
-html,
-body {
+html, body {
   margin: 0;
-  padding: 5;
+  padding: 0;
   height: 100%;
   width: 100%;
+  font-family: system-ui, sans-serif;
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+h1 {
+  margin-top: 1rem;
+  font-size: 1.5rem;
 }
 
 #map {
-  width: 160%; /* Adjust width to your desired size */
-  height: 80%; /* Adjust height to your desired size */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for effect */
-  border-radius: 8px; /* Optional: rounded corners */
+  width: 720px;
+  height: 400px;
+  margin-top: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
