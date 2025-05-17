@@ -1,6 +1,6 @@
 import mapboxgl from 'https://cdn.jsdelivr.net/npm/mapbox-gl@2.15.0/+esm';
 
-mapboxgl.accessToken = 'pk.YOUR_ACCESS_TOKEN_HERE'; // replace with your actual token
+mapboxgl.accessToken = 'pk.eyJ1IjoidmlraS1zaGkiLCJhIjoiY21hc203ODZqMGxyaTJzcHZlYTNldTZjdiJ9.Px2_WlK9ehu9DfQO-BaZCA'; // replace with your actual token
 
 
 // Initialize the map
