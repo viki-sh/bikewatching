@@ -28,7 +28,6 @@ function updatePositions() {
 }
 
 map.on('load', async () => {
-  // Boston
   map.addSource('boston_route', {
     type: 'geojson',
     data: 'https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::existing-bike-network-2022.geojson',
@@ -44,7 +43,6 @@ map.on('load', async () => {
     },
   });
 
-  // Cambridge
   map.addSource('cambridge_route', {
     type: 'geojson',
     data: 'https://raw.githubusercontent.com/cambridgegis/cambridgegis_data/main/Recreation/Bike_Facilities/RECREATION_BikeFacilities.geojson',
@@ -60,10 +58,9 @@ map.on('load', async () => {
     },
   });
 
-  let svg = d3.select('#map').select('svg');
-  if (svg.empty()) {
-    svg = d3.select('#map').append('svg');
-  }
+  // Append SVG to canvas container
+  const container = map.getCanvasContainer();
+  const svg = d3.select(container).append('svg');
 
   const jsonURL = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
 
