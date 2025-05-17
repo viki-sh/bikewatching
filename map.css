@@ -10,8 +10,8 @@ body {
 }
 
 #map {
-  width: 720px;
-  height: 400px;
+  width: 920px;
+  height: 600px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow for effect */
   border-radius: 8px; /* Optional: rounded corners */
 }
