@@ -25,7 +25,6 @@ function filterByMinute(tripsByMinute, minute) {
     ? tripsByMinute.slice(min).concat(tripsByMinute.slice(0, max)).flat()
     : tripsByMinute.slice(min, max).flat();
 }
-
 function computeStationTraffic(stations, timeFilter = -1) {
   const departures = d3.rollup(
     filterByMinute(departuresByMinute, timeFilter),
@@ -64,7 +63,6 @@ const map = new mapboxgl.Map({
   minZoom: 5,
   maxZoom: 18,
 });
-
 map.on('load', async () => {
   map.addSource('boston_route', {
     type: 'geojson',
@@ -99,7 +97,7 @@ map.on('load', async () => {
 
   const radiusScale = d3
     .scaleSqrt()
-    .domain([0, d3.max(stations, s => s.totalTraffic || 500)]) // fallback if undefined
+    .domain([0, d3.max(stations, s => s.totalTraffic || 500)])
     .range([0, 25]);
 
   const stationFlow = d3.scaleQuantize().domain([0, 1]).range([0, 0.5, 1]);
