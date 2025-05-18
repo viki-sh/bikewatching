@@ -1,8 +1,7 @@
-
 import mapboxgl from 'https://cdn.jsdelivr.net/npm/mapbox-gl@2.15.0/+esm';
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 
-mapboxgl.accessToken = 'pk.eyJ1IjoidmlraS1zaGkiLCJhIjoiY21hc203ODZqMGxyaTJzcHZlYTNldTZjdiJ9.Px2_WlK9ehu9DfQO-BaZCA'; // Replace with actual token
+mapboxgl.accessToken = 'pk.eyJ1IjoidmlraS1zaGkiLCJhIjoiY21hc203ODZqMGxyaTJzcHZlYTNldTZjdiJ9.Px2_WlK9ehu9DfQO-BaZCA';
 
 const map = new mapboxgl.Map({
   container: 'map',
@@ -123,6 +122,8 @@ map.on('load', async () => {
     .data(stations, d => d.short_name)
     .enter()
     .append('circle')
+    .attr('cx', d => getCoords(d).cx)
+    .attr('cy', d => getCoords(d).cy)
     .attr('r', d => radiusScale(d.totalTraffic))
     .style('--departure-ratio', d => stationFlow(d.departures / d.totalTraffic))
     .each(function (d) {
@@ -132,7 +133,7 @@ map.on('load', async () => {
     });
 
   function updatePositions() {
-    circles
+    svg.selectAll('circle')
       .attr('cx', d => getCoords(d).cx)
       .attr('cy', d => getCoords(d).cy);
   }
@@ -141,7 +142,6 @@ map.on('load', async () => {
   map.on('zoom', updatePositions);
   map.on('resize', updatePositions);
   map.on('moveend', updatePositions);
-
   updatePositions();
 
   const timeSlider = document.getElementById('time-slider');
