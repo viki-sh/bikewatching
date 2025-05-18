@@ -50,7 +50,7 @@ function computeStationTraffic(stations, timeFilter = -1) {
   );
 
   return stations.map(station => {
-    let id = station.Number;
+    let id = station.short_name;
     station.departures = deps.get(id) ?? 0;
     station.arrivals = arrs.get(id) ?? 0;
     station.totalTraffic = station.arrivals + station.departures;
@@ -59,7 +59,6 @@ function computeStationTraffic(stations, timeFilter = -1) {
 }
 
 map.on('load', async () => {
-  // Boston bike lanes
   map.addSource('boston_route', {
     type: 'geojson',
     data: 'https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::existing-bike-network-2022.geojson',
@@ -75,7 +74,6 @@ map.on('load', async () => {
     },
   });
 
-  // Cambridge lanes
   map.addSource('cambridge_route', {
     type: 'geojson',
     data: 'https://raw.githubusercontent.com/cambridgegis/cambridgegis_data/main/Recreation/Bike_Facilities/RECREATION_BikeFacilities.geojson',
@@ -104,7 +102,7 @@ map.on('load', async () => {
   radiusScale.domain([0, d3.max(stations, d => d.totalTraffic)]);
 
   let circles = svg.selectAll('circle')
-    .data(stations, d => d.Number)
+    .data(stations, d => d.short_name)
     .join('circle')
     .attr('r', d => radiusScale(d.totalTraffic))
     .style('--departure-ratio', d => stationFlow(d.departures / d.totalTraffic || 0))
@@ -122,7 +120,7 @@ map.on('load', async () => {
     else radiusScale.range([3, 50]);
 
     circles = svg.selectAll('circle')
-      .data(updated, d => d.Number)
+      .data(updated, d => d.short_name)
       .join('circle')
       .attr('r', d => radiusScale(d.totalTraffic))
       .style('--departure-ratio', d => stationFlow(d.departures / d.totalTraffic || 0));
